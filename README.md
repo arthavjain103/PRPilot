@@ -27,6 +27,8 @@ This repository contains two services used to analyze GitHub pull requests:
 User → FastAPI → Django (Core API) → Celery → Redis → GitHub API → LLM → Response
 ```
 
+![Architecture diagram](assests/architecture.png)
+
 ---
 
 ## 🎯 Objectives
@@ -89,7 +91,6 @@ Any frontend (React, CLI, mobile app) can connect through REST APIs — making i
 - Isolated LLM service = no backend blocking
 
 ---
-
 
 ## ✅ Benefits Achieved
 
@@ -237,4 +238,3 @@ Below are the main routes provided by the two services. Example payloads and exa
 	}
 }
 ```
-
