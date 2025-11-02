@@ -90,17 +90,6 @@ Any frontend (React, CLI, mobile app) can connect through REST APIs — making i
 
 ---
 
-## 🧩 Why Not a Monolith?
-
-| Without This Architecture | Problem                             |
-| ------------------------- | ----------------------------------- |
-| Single server (monolith)  | Slow, blocked requests              |
-| No Celery                 | Long tasks freeze API               |
-| No Redis                  | API rate limits hit faster          |
-| AI inside backend         | Tight coupling, low maintainability |
-| No modularity             | Difficult to scale and debug        |
-
----
 
 ## ✅ Benefits Achieved
 
