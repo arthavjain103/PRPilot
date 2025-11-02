@@ -1,4 +1,4 @@
-# PR Review Project
+# PRPilot - GitHub PR Analyzer
 
 # Overview
 
