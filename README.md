@@ -10,7 +10,7 @@ This repository contains two services used to analyze GitHub pull requests:
 - `fastapi_app/` — FastAPI service that provides a lightweight HTTP frontend to start tasks and query status.
 - `scripts.py` — utility script to call the review API directly (interactive mode).
 
-## 🧱 Architecture Overview
+# Architecture Overview
 
 | Layer              | Technology                | Purpose                                                          |
 | ------------------ | ------------------------- | ---------------------------------------------------------------- |
@@ -21,7 +21,7 @@ This repository contains two services used to analyze GitHub pull requests:
 | **AI Engine**      | **Groq LLM**              | Performs intelligent code review and insight generation          |
 | **External API**   | **GitHub API**            | Fetches pull request data and file contents                      |
 
-### 🧩 Flow Diagram (Conceptual)
+# Flow Diagram (Conceptual)
 
 ```
 User → FastAPI → Django (Core API) → Celery → Redis → GitHub API → LLM → Response
@@ -31,7 +31,7 @@ User → FastAPI → Django (Core API) → Celery → Redis → GitHub API → L
 
 ---
 
-## 🎯 Objectives
+# Objectives
 
 - Automate and accelerate PR code review
 - Process large GitHub repositories efficiently
@@ -42,37 +42,37 @@ User → FastAPI → Django (Core API) → Celery → Redis → GitHub API → L
 
 ---
 
-## ⚙️ Why This Architecture?
+# Why This Architecture?
 
-### ✅ **Microservice-Style Decoupling**
+# **Microservice-Style Decoupling**
 
 Each component (FastAPI, Django, Celery, Redis, LLM) is independent and can scale separately.
 Loose coupling ensures flexibility, faster debugging, and clean code management.
 
-### ⚡ **FastAPI as Gateway**
+# **FastAPI as Gateway**
 
 Handles multiple client requests asynchronously, providing lightning-fast response times even under heavy load.
 
-### 🧠 **Django as Core Logic**
+# **Django as Core Logic**
 
 Mature backend for handling authentication, ORM, data validation, and API endpoints — ensuring reliability and security.
 
-### 🔄 **Celery + Redis for Background Processing**
+# **Celery + Redis for Background Processing**
 
 Heavy LLM tasks are offloaded to Celery workers.
 Redis acts as both broker and cache — reducing GitHub API load and improving speed.
 
-### 🤖 **LLM Integration Layer**
+# **LLM Integration Layer**
 
 AI processing is isolated from backend logic, allowing easy model upgrades and parallel experimentation.
 
-### 🌐 **API-Driven Extensibility**
+# **API-Driven Extensibility**
 
 Any frontend (React, CLI, mobile app) can connect through REST APIs — making it a plug-and-play system.
 
 ---
 
-## 💡 Why It’s Unique
+# Why It’s Unique
 
 - Combines **FastAPI** and **Django** in one hybrid system
 - True **decoupled microservice design** — not a monolith
@@ -82,7 +82,7 @@ Any frontend (React, CLI, mobile app) can connect through REST APIs — making i
 
 ---
 
-## 🧠 Scalability Highlights
+# Scalability Highlights
 
 - Each layer can scale independently
 - Asynchronous FastAPI requests
@@ -92,18 +92,18 @@ Any frontend (React, CLI, mobile app) can connect through REST APIs — making i
 
 ---
 
-## ✅ Benefits Achieved
+# Benefits Achieved
 
-- ⚡ High concurrency and low latency
-- 🧱 Strong, maintainable backend structure
-- 🔄 Seamless background task execution
-- 💾 Faster performance via caching
-- 🧠 AI analysis integrated safely and asynchronously
-- 🚀 Future-ready, horizontally scalable system
+-  High concurrency and low latency
+-  Strong, maintainable backend structure
+-  Seamless background task execution
+-  Faster performance via caching
+-  AI analysis integrated safely and asynchronously
+-  Future-ready, horizontally scalable system
 
 ---
 
-## 🧰 Tech Stack
+# Tech Stack
 
 - **FastAPI** — API Gateway (async request handling)
 - **Django REST Framework** — Business logic & database layer
@@ -114,9 +114,9 @@ Any frontend (React, CLI, mobile app) can connect through REST APIs — making i
 
 ---
 
-## ⚙️ Setup (Windows / PowerShell)
+##  Setup (Windows / PowerShell)
 
-### 1️⃣ Environment Setup
+# Environment Setup
 
 ```powershell
 python -m venv venv
@@ -130,7 +130,7 @@ Or install manually:
 pip install django celery redis requests httpx groq python-dotenv djangorestframework fastapi uvicorn
 ```
 
-### 2️⃣ Redis Setup
+# Redis Setup
 
 Ensure Redis server is running on:
 
@@ -138,7 +138,7 @@ Ensure Redis server is running on:
 127.0.0.1:6379
 ```
 
-### 3️⃣ Environment Variables (`.env`)
+# Environment Variables (`.env`)
 
 ```
 GROQ_API_KEY=sk_your_groq_key_here
@@ -146,7 +146,7 @@ GROQ_API_KEY=sk_your_groq_key_here
 
 ---
 
-## 🧩 Running the Services
+# Running the Services
 
 ### **Run Django (Core API)**
 
@@ -177,7 +177,7 @@ python scripts.py
 
 ---
 
-## 🔍 Troubleshooting
+# Troubleshooting
 
 | Issue                     | Cause                                                   | Fix                                                 |
 | ------------------------- | ------------------------------------------------------- | --------------------------------------------------- |
@@ -187,11 +187,11 @@ python scripts.py
 
 ---
 
-## 🧩 Future Enhancements
+# Future Enhancements
 
-- 🪶 Add PostgreSQL for persistent result storage
-- 🧩 Integrate WebSocket (real-time task progress)
-- 💬 Add frontend layer
+-  Add PostgreSQL for persistent result storage
+-  Integrate WebSocket (real-time task progress)
+-  Add frontend layer
 
 ---
 
