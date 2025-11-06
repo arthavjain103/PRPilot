@@ -1,6 +1,6 @@
 from groq import Groq
 import os
-from prompts import system_prompt
+from .prompts import system_prompt
 
 
 key = os.getenv("GROQ_API_KEY")
