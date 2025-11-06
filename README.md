@@ -209,7 +209,7 @@ Below are the main routes provided by the two services. Example payloads and exa
 {
   "repo_url": "https://github.com/<owner>/<repo>",
   "pr_number": "123",
-  "github_token": "<optional_token>"
+  "github_token": "<token>"
 }
 ```
 
