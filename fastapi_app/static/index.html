@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PRPilot - Intelligent Pull Request Analysis Tool" />
+  <title>PRPilot - PR Analysis</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,600&family=JetBrains+Mono:wght@400;500;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">PRPilot</div>
+        <div class="tagline">Intelligent GitHub Pull Request Analysis</div>
+      </header>
+
+      <main>
+        <section class="form-section">
+          <h2>Analyze Your PR</h2>
+          <form id="form">
+            <div class="form-group">
+              <label for="repo_url">Repository URL</label>
+              <input
+                type="text"
+                id="repo_url"
+                placeholder="e.g., https://github.com/username/repo-name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="pr_number">PR Number</label>
+              <input
+                type="number"
+                id="pr_number"
+                placeholder="e.g., 123"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="github_token">GitHub Token (Optional)</label>
+              <input
+                type="password"
+                id="github_token"
+                placeholder="Your personal access token"
+              />
+            </div>
+
+            <button type="submit">Start Analysis</button>
+          </form>
+        </section>
+
+        <section class="status-section">
+          <h2>Results</h2>
+          <div id="status">
+            <div style="color: var(--text-tertiary); text-align: center; padding: 60px 20px;">
+              Submit a PR to begin analysis
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- External Script -->
+    <script src="/static/script.js"></script>
+  </body>
+</html>

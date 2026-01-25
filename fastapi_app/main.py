@@ -1,9 +1,22 @@
 from fastapi import FastAPI, HTTPException, status
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional
 import httpx
+import os
 
 app = FastAPI()
+
+# Mount static files
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@app.get("/")
+async def read_root():
+    """Serve the frontend HTML"""
+    return FileResponse(os.path.join(static_dir, "index.html"))
 
 class AnalyzePRRequest(BaseModel):
     repo_url: str
