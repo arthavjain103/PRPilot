@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Analysis History - PRPilot" />
+    <title>Analysis History - PRPilot</title>
+
+    <!-- Distinctive Fonts for Premium Developer Aesthetic -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css" />
+
+    <style>
+      .history-container {
+        padding: var(--space-2xl) 0;
+      }
+
+      .history-list {
+        display: grid;
+        gap: var(--space-lg);
+      }
+
+      .history-item {
+        background-color: var(--color-surface);
+        border-radius: var(--radius-lg);
+        padding: var(--space-xl);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--color-border-light);
+        transition: all var(--transition-base);
+        cursor: pointer;
+      }
+
+      .history-item:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+        border-color: var(--color-accent-muted);
+      }
+
+      .history-item-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--space-md);
+        flex-wrap: wrap;
+        gap: var(--space-md);
+      }
+
+      .history-item-title {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-primary);
+        font-family: var(--font-family-mono);
+        word-break: break-all;
+      }
+
+      .history-item-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-lg);
+        margin-top: var(--space-md);
+        padding-top: var(--space-md);
+        border-top: 1px solid var(--color-border-light);
+      }
+
+      .meta-field {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+      }
+
+      .meta-label {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .meta-value {
+        color: var(--color-text-primary);
+        font-family: var(--font-family-mono);
+        word-break: break-all;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .badge-processing {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .badge-success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .badge-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: var(--space-3xl);
+        background-color: var(--color-surface);
+        border-radius: var(--radius-lg);
+        border: 2px dashed var(--color-border-light);
+      }
+
+      .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: var(--space-lg);
+      }
+
+      .empty-state h3 {
+        margin-bottom: var(--space-md);
+      }
+
+      .empty-state p {
+        color: var(--color-text-tertiary);
+        margin-bottom: var(--space-lg);
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        margin-bottom: var(--space-2xl);
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+      }
+
+      .breadcrumb a {
+        color: var(--color-accent);
+      }
+
+      @media (max-width: 768px) {
+        .history-item-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .history-item-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        overflow: auto;
+      }
+
+      .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background-color: var(--color-surface);
+        padding: var(--space-2xl);
+        border-radius: var(--radius-lg);
+        max-width: 900px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-xl);
+        padding-bottom: var(--space-lg);
+        border-bottom: 1px solid var(--color-border-light);
+      }
+
+      .modal-title {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text-primary);
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        transition: color var(--transition-fast);
+      }
+
+      .modal-close:hover {
+        color: var(--color-text-primary);
+      }
+
+      .analysis-file {
+        margin-bottom: var(--space-2xl);
+        padding-bottom: var(--space-lg);
+        border-bottom: 1px solid var(--color-border-light);
+      }
+
+      .analysis-file-name {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-accent);
+        font-family: var(--font-family-mono);
+        margin-bottom: var(--space-lg);
+      }
+
+      .issue-item {
+        margin-bottom: var(--space-lg);
+        padding: var(--space-lg);
+        background-color: var(--color-bg-secondary);
+        border-left: 4px solid var(--color-accent);
+        border-radius: var(--radius-md);
+      }
+
+      .issue-type {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        background-color: var(--color-accent);
+        color: white;
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        margin-bottom: var(--space-md);
+        text-transform: uppercase;
+      }
+
+      .issue-line {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-tertiary);
+        margin-bottom: var(--space-sm);
+      }
+
+      .issue-description {
+        margin-bottom: var(--space-md);
+        color: var(--color-text-primary);
+      }
+
+      .issue-suggestion {
+        padding: var(--space-md);
+        background-color: rgba(76, 175, 80, 0.1);
+        border-left: 3px solid #4caf50;
+        border-radius: var(--radius-md);
+        color: var(--color-text-primary);
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Analysis Modal -->
+    <div id="analysisModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title" id="modalTitle">Analysis Results</div>
+          <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div id="analysisDetails"></div>
+      </div>
+    </div>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <div class="logo" id="logo-home" style="cursor: pointer">PRPilot</div>
+          <nav class="nav">
+            <a href="/dashboard">Analyzer</a>
+            <a href="/history" class="active">History</a>
+            <button
+              id="logout-btn"
+              class="btn btn-secondary btn-sm"
+              style="border: none"
+            >
+              Logout
+            </button>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+      <div class="breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span>History</span>
+      </div>
+
+      <h1 style="margin-bottom: var(--space-lg)">Analysis History</h1>
+      <p
+        style="
+          margin-bottom: var(--space-2xl);
+          color: var(--color-text-secondary);
+        "
+      >
+        View all your previous PR analyses and results.
+      </p>
+
+      <div class="history-container">
+        <div id="history-list" class="history-list"></div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div
+          style="
+            text-align: center;
+            color: var(--color-text-tertiary);
+            font-size: var(--font-size-sm);
+          "
+        >
+          <p>&copy; 2026 PRPilot. AI-Powered GitHub PR Intelligence.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/static/auth.js"></script>
+    <script src="/static/api.js"></script>
+    <script>
+      const historyList = document.getElementById("history-list");
+      const logoutBtn = document.getElementById("logout-btn");
+      const logoHome = document.getElementById("logo-home");
+      const analysisModal = document.getElementById("analysisModal");
+      const closeModal = document.getElementById("closeModal");
+      const analysisDetails = document.getElementById("analysisDetails");
+      const modalTitle = document.getElementById("modalTitle");
+
+      // Check authentication
+      if (!localStorage.getItem("access_token")) {
+        window.location.href = "/login";
+      }
+
+      // Logo click to go home
+      logoHome.addEventListener("click", () => {
+        window.location.href = "/";
+      });
+
+      // Logout functionality
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/login";
+      });
+
+      // Modal close handlers
+      closeModal.addEventListener("click", () => {
+        analysisModal.classList.remove("show");
+      });
+
+      window.addEventListener("click", (event) => {
+        if (event.target === analysisModal) {
+          analysisModal.classList.remove("show");
+        }
+      });
+
+      // Function to display analysis results in modal
+      function showAnalysis(taskId, repoUrl, prNumber) {
+        modalTitle.textContent =
+          "Analysis Results - " + repoUrl + " #" + prNumber;
+        analysisDetails.innerHTML = `<p style="text-align: center; color: var(--color-text-tertiary);">Loading analysis...</p>`;
+        analysisModal.classList.add("show");
+
+        const accessToken = localStorage.getItem("access_token");
+        fetch(`/api/analyze/status/${taskId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            let html = "";
+            const analysisResult =
+              data.analysis_result ||
+              (data.result && data.result.analysis_result);
+
+            if (analysisResult && Array.isArray(analysisResult)) {
+              analysisResult.forEach((file) => {
+                html += `<div class="analysis-file">
+                  <div class="analysis-file-name">${file.filename}</div>`;
+
+                try {
+                  const analysis =
+                    typeof file.analysis_result === "string"
+                      ? JSON.parse(file.analysis_result)
+                      : file.analysis_result;
+
+                  if (analysis.issues && Array.isArray(analysis.issues)) {
+                    analysis.issues.forEach((issue) => {
+                      html += `
+                      <div class="issue-item">
+                        <div class="issue-type">${issue.type.toUpperCase()}</div>
+                        <div class="issue-line">Line ${issue.line}</div>
+                        <div class="issue-description"><strong>Issue:</strong> ${issue.description}</div>
+                        <div class="issue-suggestion">${issue.suggestion}</div>
+                      </div>
+                      `;
+                    });
+                  }
+                } catch (e) {
+                  html += `<p>${file.analysis_result}</p>`;
+                }
+
+                html += `</div>`;
+              });
+            } else {
+              html = `<p style="color: var(--color-text-tertiary);">No analysis results available.</p>`;
+            }
+
+            analysisDetails.innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Error fetching analysis:", error);
+            analysisDetails.innerHTML = `<p style="color: var(--color-danger);">Failed to load analysis results.</p>`;
+          });
+      }
+
+      // Load history
+      async function loadHistory() {
+        try {
+          const accessToken = localStorage.getItem("access_token");
+          const response = await fetch("/api/analyze/history", {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to load history");
+          }
+
+          const data = await response.json();
+          const history = data.history || [];
+
+          if (history.length === 0) {
+            historyList.innerHTML = `
+            <div class="empty-state">
+              <h3>No Analysis History</h3>
+              <p>You haven't analyzed any PRs yet.</p>
+              <a href="/dashboard" class="btn btn-primary">Start Analyzing</a>
+            </div>
+          `;
+            return;
+          }
+
+          historyList.innerHTML = history
+            .map(
+              (item) => `
+          <div class="history-item" onclick="showAnalysis('${item.task_id}', '${item.repo_url}', ${item.pr_number})">
+            <div class="history-item-header">
+              <div class="history-item-title">${item.repo_url} #${item.pr_number}</div>
+              <div class="badge badge-${item.status}">${item.status || "unknown"}</div>
+            </div>
+            <div class="history-item-meta">
+              <div class="meta-field">
+                <div class="meta-label">Task ID</div>
+                <div class="meta-value">${item.task_id}</div>
+              </div>
+              <div class="meta-field">
+                <div class="meta-label">Analyzed At</div>
+                <div class="meta-value">${new Date(item.created_at).toLocaleString()}</div>
+              </div>
+            </div>
+          </div>
+        `,
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error loading history:", error);
+          historyList.innerHTML = `
+          <div class="alert alert-danger">
+            Failed to load analysis history. Please try again later.
+          </div>
+        `;
+        }
+      }
+
+      loadHistory();
+    </script>
+  </body>
+</html>

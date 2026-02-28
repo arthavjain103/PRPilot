@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="PRPilot Dashboard" />
+    <title>Dashboard - PRPilot</title>
+
+    <!-- Distinctive Fonts for Premium Developer Aesthetic -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css" />
+
+    <style>
+      .dashboard-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-2xl);
+        padding: var(--space-2xl) 0;
+      }
+
+      .analyzer-panel {
+        background-color: var(--color-surface);
+        border-radius: var(--radius-lg);
+        padding: var(--space-2xl);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--color-border-light);
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: var(--space-md);
+        border: 1px solid var(--color-border-light);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-base);
+        font-family: var(--font-family-sans);
+        transition: all var(--transition-fast);
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px var(--color-accent-muted);
+        outline: none;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: var(--space-sm);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-primary);
+      }
+
+      .form-group {
+        margin-bottom: var(--space-lg);
+      }
+
+      .btn-submit {
+        width: 100%;
+        padding: var(--space-md);
+        background-color: var(--color-accent);
+        color: var(--color-text-inverse);
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: var(--font-weight-semibold);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        font-size: var(--font-size-base);
+      }
+
+      .btn-submit:hover {
+        background-color: var(--color-accent-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 82, 204, 0.3);
+      }
+
+      .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .status-panel {
+        background-color: var(--color-surface);
+        border-radius: var(--radius-lg);
+        padding: var(--space-2xl);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--color-border-light);
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .status-display {
+        flex: 1;
+        background-color: var(--color-bg-secondary);
+        border-radius: var(--radius-md);
+        padding: var(--space-lg);
+        overflow: auto;
+        font-family: var(--font-family-mono);
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+      }
+
+      .status-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--space-lg);
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .badge-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .badge-processing {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      .badge-success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .badge-error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      .error-alert {
+        display: none;
+        color: var(--color-danger);
+        margin-bottom: var(--space-lg);
+        padding: var(--space-md);
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: var(--radius-md);
+        animation: slideInDown 0.4s ease-out;
+      }
+
+      .error-alert.show {
+        display: block;
+      }
+
+      .result-content {
+        margin-top: var(--space-lg);
+      }
+
+      .result-section {
+        margin-bottom: var(--space-lg);
+        padding-bottom: var(--space-lg);
+        border-bottom: 1px solid var(--color-border-light);
+      }
+
+      .result-section:last-child {
+        border-bottom: none;
+      }
+
+      .result-title {
+        font-weight: var(--font-weight-bold);
+        color: var(--color-accent);
+        margin-bottom: var(--space-md);
+      }
+
+      @media (max-width: 1000px) {
+        .dashboard-content {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+        overflow-x: auto;
+        margin: var(--space-md) 0;
+        font-family: var(--font-family-mono);
+        font-size: var(--font-size-sm);
+        line-height: 1.6;
+      }
+
+      .code-block code {
+        background: none;
+        color: inherit;
+        padding: 0;
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        margin-bottom: var(--space-2xl);
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+      }
+
+      .breadcrumb a {
+        color: var(--color-accent);
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      @keyframes slideInDown {
+        from {
+          transform: translateY(-10px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <div class="logo" id="logo-home" style="cursor: pointer">PRPilot</div>
+          <nav class="nav">
+            <a href="/dashboard" class="active">Analyzer</a>
+            <a href="/history">History</a>
+            <button
+              id="logout-btn"
+              class="btn btn-secondary btn-sm"
+              style="border: none"
+            >
+              Logout
+            </button>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+      <div class="breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span>Dashboard</span>
+      </div>
+
+      <h1 style="margin-bottom: var(--space-lg)">PR Analyzer</h1>
+      <p
+        style="
+          margin-bottom: var(--space-2xl);
+          color: var(--color-text-secondary);
+        "
+      >
+        Submit a GitHub repository and PR number for AI-powered analysis.
+      </p>
+
+      <div class="dashboard-content">
+        <!-- Analyzer Panel -->
+        <div class="analyzer-panel">
+          <h2 style="margin-bottom: var(--space-xl)">Analyze Pull Request</h2>
+
+          <div id="error-alert" class="error-alert"></div>
+
+          <form id="analyze-form">
+            <div class="form-group">
+              <label for="repo_url">Repository URL</label>
+              <input
+                type="url"
+                id="repo_url"
+                name="repo_url"
+                placeholder="https://github.com/owner/repository"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="pr_number">PR Number</label>
+              <input
+                type="number"
+                id="pr_number"
+                name="pr_number"
+                placeholder="123"
+                required
+                min="1"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="github_token">GitHub Token (Optional)</label>
+              <input
+                type="password"
+                id="github_token"
+                name="github_token"
+                placeholder="ghp_xxxxxxxxxxxxx"
+              />
+            </div>
+
+            <button type="submit" class="btn-submit" id="submit-btn">
+              Analyze PR
+            </button>
+          </form>
+        </div>
+
+        <!-- Status Panel -->
+        <div class="status-panel">
+          <div class="status-header">
+            <h3 style="margin: 0">Analysis Status</h3>
+            <div id="status-badge" class="status-badge badge-pending">
+              Waiting
+            </div>
+          </div>
+
+          <div class="status-display" id="status-display">
+            <p
+              style="
+                color: var(--color-text-tertiary);
+                text-align: center;
+                margin-top: 50px;
+              "
+            >
+              Submit a PR to begin analysis...
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div
+          style="
+            text-align: center;
+            color: var(--color-text-tertiary);
+            font-size: var(--font-size-sm);
+          "
+        >
+          <p>&copy; 2026 PRPilot. AI-Powered GitHub PR Intelligence.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/static/auth.js"></script>
+    <script src="/static/api.js"></script>
+    <script>
+      const analyzeForm = document.getElementById("analyze-form");
+      const statusBadge = document.getElementById("status-badge");
+      const statusDisplay = document.getElementById("status-display");
+      const errorAlert = document.getElementById("error-alert");
+      const submitBtn = document.getElementById("submit-btn");
+      const logoutBtn = document.getElementById("logout-btn");
+
+      let currentTaskId = null;
+      let statusCheckInterval = null;
+
+      // Check authentication
+      if (!localStorage.getItem("access_token")) {
+        window.location.href = "/login";
+      }
+
+      // Logo click to go home
+      const logoHome = document.getElementById("logo-home");
+      logoHome.addEventListener("click", () => {
+        window.location.href = "/";
+      });
+
+      // Logout functionality
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/login";
+      });
+
+      // Form submission
+      analyzeForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const repoUrl = document.getElementById("repo_url").value;
+        const prNumber = document.getElementById("pr_number").value;
+        const githubToken =
+          document.getElementById("github_token").value || null;
+
+        try {
+          errorAlert.classList.remove("show");
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Submitting...";
+          statusBadge.textContent = "Submitting";
+          statusBadge.className = "status-badge badge-pending";
+          statusDisplay.innerHTML = "<p>Submitting your PR for analysis...</p>";
+
+          const accessToken = localStorage.getItem("access_token");
+          const response = await fetch("/api/analyze/start", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+              repo_url: repoUrl,
+              pr_number: prNumber,
+              github_token: githubToken,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(
+              data.detail?.reason || data.detail || "Submission failed",
+            );
+          }
+
+          currentTaskId = data.task_id;
+          statusBadge.textContent = "Processing";
+          statusBadge.className = "status-badge badge-processing";
+          statusDisplay.innerHTML = `
+          <p>Task ID: <code style="background: var(--color-surface); padding: 2px 6px; border-radius: 3px;">${currentTaskId}</code></p>
+          <p style="margin-top: 1rem;">Analyzing your pull request...</p>
+          <p style="margin-top: 1rem; color: var(--color-text-tertiary); font-size: 0.85em;">This may take a minute. Analyzing your pull request...</p>
+        `;
+
+          // Start polling for status
+          pollStatus();
+          statusCheckInterval = setInterval(pollStatus, 2000);
+        } catch (error) {
+          errorAlert.textContent = `Error: ${error.message}`;
+          errorAlert.classList.add("show");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Analyze PR";
+        }
+      });
+
+      async function pollStatus() {
+        if (!currentTaskId) return;
+
+        try {
+          const accessToken = localStorage.getItem("access_token");
+          const response = await fetch(`/api/analyze/status/${currentTaskId}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch status");
+          }
+
+          const status = data.status?.toLowerCase() || "pending";
+
+          if (status === "success") {
+            clearInterval(statusCheckInterval);
+            statusBadge.textContent = "Completed";
+            statusBadge.className = "status-badge badge-success";
+            displayResults(data);
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Analyze PR";
+          } else if (status === "failure" || status === "error") {
+            clearInterval(statusCheckInterval);
+            statusBadge.textContent = "Error";
+            statusBadge.className = "status-badge badge-error";
+            statusDisplay.innerHTML = `<p style="color: var(--color-danger);">Error: ${data.error || "Analysis failed"}</p>`;
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Analyze PR";
+          } else {
+            statusBadge.className = "status-badge badge-processing";
+            statusDisplay.innerHTML = `
+            <p>Task ID: <code style="background: var(--color-surface); padding: 2px 6px; border-radius: 3px;">${currentTaskId}</code></p>
+            <p style="margin-top: 1rem;">Status: <strong>${status}</strong></p>
+            <p style="margin-top: 1rem; color: var(--color-text-tertiary); font-size: 0.85em;">Still analyzing... ⏳</p>
+          `;
+          }
+        } catch (error) {
+          console.error("Status check error:", error);
+        }
+      }
+
+      function displayResults(data) {
+        console.log("displayResults data:", data);
+        let html = `<div class="result-content">`;
+
+        // Get analysis_result from either direct data or wrapped in result
+        const analysisResult =
+          data.analysis_result || (data.result && data.result.analysis_result);
+
+        // Handle analysis_result format from backend
+        if (analysisResult && Array.isArray(analysisResult)) {
+          analysisResult.forEach((file) => {
+            html += `
+            <div class="result-section">
+              <div class="result-title">${file.filename}</div>
+            `;
+
+            try {
+              // Parse the analysis_result JSON string
+              const analysis =
+                typeof file.analysis_result === "string"
+                  ? JSON.parse(file.analysis_result)
+                  : file.analysis_result;
+
+              if (analysis.issues && Array.isArray(analysis.issues)) {
+                analysis.issues.forEach((issue) => {
+                  html += `
+                  <div style="margin-bottom: 1rem; padding: 0.75rem; background: var(--color-bg-secondary); border-radius: 4px;">
+                    <p><strong>${issue.type.toUpperCase()}</strong> (Line ${issue.line})</p>
+                    <p><strong>Issue:</strong> ${issue.description}</p>
+                    <p><strong>Suggestion:</strong> ${issue.suggestion}</p>
+                  </div>
+                  `;
+                });
+              }
+            } catch (e) {
+              console.error("Error parsing analysis:", e);
+              html += `<p>${file.analysis_result}</p>`;
+            }
+
+            html += `</div>`;
+          });
+        }
+        // Fallback for old format
+        else {
+          const result = data.result || {};
+
+          if (result.summary) {
+            html += `
+            <div class="result-section">
+              <div class="result-title">Summary</div>
+              <p>${result.summary}</p>
+            </div>
+          `;
+          }
+
+          if (result.code_suggestions && result.code_suggestions.length > 0) {
+            html += `
+            <div class="result-section">
+              <div class="result-title">Code Suggestions</div>
+          `;
+            result.code_suggestions.forEach((suggestion, idx) => {
+              html += `<p><strong>${idx + 1}.</strong> ${suggestion}</p>`;
+            });
+            html += `</div>`;
+          }
+
+          if (result.risk_analysis) {
+            html += `
+            <div class="result-section">
+              <div class="result-title">Risk Analysis</div>
+              <p>${result.risk_analysis}</p>
+            </div>
+          `;
+          }
+
+          if (result.improvements && result.improvements.length > 0) {
+            html += `
+            <div class="result-section">
+              <div class="result-title">Improvements</div>
+              <ul style="margin-left: 1.5rem;">
+          `;
+            result.improvements.forEach((imp) => {
+              html += `<li style="margin-bottom: 0.5rem;">${imp}</li>`;
+            });
+            html += `</ul></div>`;
+          }
+        }
+
+        html += `</div>`;
+        statusDisplay.innerHTML = html;
+      }
+    </script>
+  </body>
+</html>

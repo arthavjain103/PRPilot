@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sign in to PRPilot" />
+    <title>Sign In - PRPilot</title>
+
+    <!-- Distinctive Fonts for Premium Developer Aesthetic -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css" />
+
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: linear-gradient(
+          135deg,
+          var(--color-bg-primary) 0%,
+          var(--color-bg-secondary) 100%
+        );
+      }
+
+      .auth-container {
+        width: 100%;
+        max-width: 420px;
+        padding: var(--space-lg);
+      }
+
+      .auth-card {
+        background-color: var(--color-surface);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        padding: var(--space-3xl);
+        border: 1px solid var(--color-border-light);
+        animation: slideInCenter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: var(--space-2xl);
+      }
+
+      .auth-header h1 {
+        font-size: var(--font-size-2xl);
+        margin-bottom: var(--space-md);
+      }
+
+      .auth-header p {
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+      }
+
+      .form-group input {
+        padding: var(--space-md);
+        border: 1px solid var(--color-border-light);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-base);
+        transition: all var(--transition-fast);
+      }
+
+      .form-group input:focus {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px var(--color-accent-muted);
+      }
+
+      .btn-submit {
+        width: 100%;
+        margin-top: var(--space-lg);
+      }
+
+      .auth-footer {
+        text-align: center;
+        margin-top: var(--space-2xl);
+        padding-top: var(--space-lg);
+        border-top: 1px solid var(--color-border-light);
+      }
+
+      .auth-footer p {
+        margin-bottom: var(--space-md);
+        color: var(--color-text-secondary);
+      }
+
+      .auth-footer a {
+        color: var(--color-accent);
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .auth-footer a:hover {
+        text-decoration: underline;
+      }
+
+      .error-message {
+        display: none;
+        color: var(--color-danger);
+        margin-bottom: var(--space-lg);
+        padding: var(--space-md);
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: var(--radius-md);
+        animation: slideInDown 0.4s ease-out;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .loading {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      @keyframes slideInCenter {
+        from {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h1>Welcome Back</h1>
+          <p>Sign in to your PRPilot account</p>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              required
+              autocomplete="current-password"
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-submit">
+            Sign In
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          <p>Don't have an account?</p>
+          <a href="/register">Create a free account</a>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/auth.js"></script>
+    <script src="/static/api.js"></script>
+    <script>
+      const loginForm = document.getElementById("login-form");
+      const errorMessage = document.getElementById("error-message");
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+        try {
+          errorMessage.classList.remove("show");
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Signing in...";
+
+          const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.detail || "Sign in failed");
+          }
+
+          // Store tokens
+          localStorage.setItem("access_token", data.access_token);
+          localStorage.setItem("refresh_token", data.refresh_token);
+
+          // Redirect to dashboard
+          window.location.href = "/dashboard";
+        } catch (error) {
+          errorMessage.textContent = `Error: ${error.message}`;
+          errorMessage.classList.add("show");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Sign In";
+        }
+      });
+
+      // Redirect if already logged in
+      if (localStorage.getItem("access_token")) {
+        window.location.href = "/dashboard";
+      }
+    </script>
+  </body>
+</html>

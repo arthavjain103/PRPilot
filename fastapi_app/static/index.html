@@ -1,73 +1,245 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PRPilot - Intelligent Pull Request Analysis Tool" />
-  <title>PRPilot - PR Analysis</title>
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,600&family=JetBrains+Mono:wght@400;500;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  
-  <!-- External Stylesheet -->
-  <link rel="stylesheet" href="/static/style.css" />
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="PRPilot - AI-Powered GitHub PR Intelligence"
+    />
+    <title>PRPilot - GitHub PR Analyzer</title>
+
+    <!-- Distinctive Fonts for Premium Developer Aesthetic -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
   <body>
-    <div class="container">
-      <header>
-        <div class="logo">PRPilot</div>
-        <div class="tagline">Pr Code Reviews Reimagined with AI</div>
-      </header>
+    <!-- Navigation Header -->
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">PRPilot</div>
+          <nav class="nav">
+            <a href="/" class="active">Home</a>
+            <a href="/login" class="btn btn-primary btn-sm" style="color: white"
+              >Sign In</a
+            >
+          </nav>
+        </div>
+      </div>
+    </header>
 
-      <main>
-        <section class="form-section">
-          <h2>Analyze Your PR</h2>
-          <form id="form">
-            <div class="form-group">
-              <label for="repo_url">Repository URL</label>
-              <input
-                type="text"
-                id="repo_url"
-                placeholder="e.g., https://github.com/username/repo-name"
-                required
-              />
-            </div>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Stop Guessing. Start Merging with Confidence</h1>
+          <p class="hero-subtitle">
+            Analyze pull requests with precision. Get intelligent insights in
+            seconds. and chat with your codebase. Ship better code, faster.
+          </p>
+          <a href="/register" class="btn btn-primary btn-lg"
+            >Start Reviewing for Free</a
+          >
+        </div>
+      </div>
+    </section>
 
-            <div class="form-group">
-              <label for="pr_number">PR Number</label>
-              <input
-                type="number"
-                id="pr_number"
-                placeholder="e.g., 123"
-                required
-              />
-            </div>
+    <!-- Features Section -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <h2>Why PRPilot?</h2>
+          <p>
+            Built for modern development teams that demand speed, precision, and
+            intelligence.
+          </p>
+        </div>
 
-            <div class="form-group">
-              <label for="github_token">GitHub Token (Optional)</label>
-              <input
-                type="password"
-                id="github_token"
-                placeholder="Your personal access token"
-              />
-            </div>
+        <div class="grid grid-3">
+          <!-- Feature 1 -->
+          <div class="card feature-card">
+            <h3 class="feature-card-title">Instant Analysis</h3>
+            <p class="feature-card-desc">
+              Submit a PR, get AI-powered insights instantly. No waiting, no
+              complexity.
+            </p>
+          </div>
 
-            <button type="submit">Start Analysis</button>
-          </form>
-        </section>
+          <!-- Feature 2 -->
+          <div class="card feature-card feature-card-secondary">
+            <h3 class="feature-card-title">Async Processing</h3>
+            <p class="feature-card-desc">
+              Background task processing means your workflow never blocks.
+              Microservice architecture built for scale.
+            </p>
+          </div>
 
-        <section class="status-section">
-          <h2>Results</h2>
-          <div id="status">
-            <div style="color: var(--text-tertiary); text-align: center; padding: 60px 20px;">
-              Submit a PR to begin analysis
+          <!-- Feature 3 -->
+          <div class="card feature-card">
+            <h3 class="feature-card-title">AI Review Insights</h3>
+            <p class="feature-card-desc">
+              Powered by Groq LLM. Get code suggestions, risk highlights, and
+              improvement recommendations.
+            </p>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="card feature-card feature-card-secondary">
+            <h3 class="feature-card-title">Structured Reports</h3>
+            <p class="feature-card-desc">
+              Beautiful, readable analysis reports with code samples and
+              actionable recommendations.
+            </p>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="card feature-card">
+            <h3 class="feature-card-title">Scalable Architecture</h3>
+            <p class="feature-card-desc">
+              Django + FastAPI + Celery + Redis. Enterprise-grade infrastructure
+              for modern teams.
+            </p>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="card feature-card feature-card-secondary">
+            <h3 class="feature-card-title">Secure & Private</h3>
+            <p class="feature-card-desc">
+              JWT authentication. Your code stays yours. Built with
+              security-first principles.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section
+      class="section-tight"
+      style="background-color: var(--color-bg-secondary)"
+    >
+      <div class="container">
+        <div class="section-header">
+          <h2>How It Works</h2>
+        </div>
+
+        <div class="grid grid-2" style="align-items: center">
+          <div>
+            <h3>1. Submit Your PR</h3>
+            <p>
+              Provide a GitHub repository URL and PR number. PRPilot handles the
+              rest.
+            </p>
+
+            <h3 style="margin-top: var(--space-2xl)">2. Background Analysis</h3>
+            <p>
+              Our async task processing pipeline analyzes code in the background
+              while you continue your workflow.
+            </p>
+
+            <h3 style="margin-top: var(--space-2xl)">3. AI-Powered Review</h3>
+            <p>
+              Groq LLM processes your code and generates comprehensive,
+              intelligent insights.
+            </p>
+
+            <h3 style="margin-top: var(--space-2xl)">4. View Results</h3>
+            <p>
+              Get a structured report with code suggestions, risk analysis, and
+              improvements.
+            </p>
+          </div>
+
+          <div
+            class="card"
+            style="
+              background: linear-gradient(
+                135deg,
+                var(--color-surface) 0%,
+                var(--color-surface-variant) 100%
+              );
+              min-height: 400px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <div style="text-align: center">
+              <div
+                style="
+                  font-family: var(--font-family-mono);
+                  font-size: var(--font-size-xl);
+                  color: var(--color-accent);
+                  margin-bottom: var(--space-lg);
+                "
+              >
+                USER → API → CELERY → LLM → INSIGHTS
+              </div>
+              <p
+                style="
+                  color: var(--color-text-tertiary);
+                  font-size: var(--font-size-sm);
+                "
+              >
+                Microservice architecture designed for scale
+              </p>
             </div>
           </div>
-        </section>
-      </main>
-    </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- External Script -->
-    <script src="/static/script.js"></script>
+    <!-- CTA Section -->
+    <section class="cta-premium">
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">Ready to Transform Your Code Reviews?</h2>
+          <p class="cta-subtitle">
+            Join teams that are shipping better code, faster.
+          </p>
+          <a href="/register" class="btn btn-primary btn-lg btn-no-hover"
+            >Start Analyzing Now</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>PRPilot</h4>
+            <p>AI-powered GitHub PR analysis for modern development teams.</p>
+          </div>
+          <div class="footer-section">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/dashboard">Dashboard</a></li>
+              <li><a href="/history">Analysis History</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Get Started</h4>
+            <ul>
+              <li><a href="/register">Sign Up</a></li>
+              <li><a href="/login">Sign In</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-divider">
+          <p>&copy; 2026 PRPilot. Built with precision for developers.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/static/auth.js"></script>
   </body>
 </html>

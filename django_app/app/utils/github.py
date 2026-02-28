@@ -12,21 +12,31 @@ def get_owner_and_repo(url):
         return owner , repo
     return None , None 
 
-def fetch_pr_files(repo_url , pr_number , github_token = None):
-    owner , repo = get_owner_and_repo(repo_url)
+def fetch_pr_files(repo_url, pr_number, github_token=None):
+    owner, repo = get_owner_and_repo(repo_url)
     if not owner or not repo:
         raise ValueError("Invalid GitHub repository URL")
 
     api_url = f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/files"
+    print(f"DEBUG: Fetching from URL: {api_url}")
+    print(f"DEBUG: Owner: {owner}, Repo: {repo}, PR: {pr_number}")
+    
     headers = {}
     if github_token:
+        # Remove any quotes or whitespace from token
+        github_token = str(github_token).strip().strip('"').strip("'")
         headers['Authorization'] = f'token {github_token}'
+        print(f"DEBUG: Token length: {len(github_token)}, Token (first 20 chars): {github_token[:20]}...")
+    else:
+        print("DEBUG: No GitHub token provided")
 
-    response = requests.get(api_url, headers=headers )
+    response = requests.get(api_url, headers=headers)
+    print(f"DEBUG: Response status: {response.status_code}")
+    
     if response.status_code != 200:
         raise Exception(f"Failed to fetch PR files: {response.status_code} - {response.text}")
 
-    return response.json()\
+    return response.json()
         
 def fetch_files_content(repo_url , file_path , github_token = None):
     owner , repo = get_owner_and_repo(repo_url)
@@ -46,23 +56,23 @@ def fetch_files_content(repo_url , file_path , github_token = None):
     return base64.b64decode(content_data['content']).decode('utf-8')   # change the content_data from base64 into readable form so use b64decode function for that
 
 
-def analysis_pr(repo_url , pr_number , github_token  = None):
+def analysis_pr(repo_url, pr_number, github_token=None):
     task_id = str(uuid.uuid4())
-    try :
-        pr_files = fetch_pr_files(repo_url , pr_number , github_token)
+    try:
+        pr_files = fetch_pr_files(repo_url, pr_number, github_token)
         analysis_results = []
         for files in pr_files:
             file_name = files['filename']
-            raw_content = fetch_files_content(repo_url , file_name , github_token)
+            raw_content = fetch_files_content(repo_url, file_name, github_token)
             print("DEBUG: filename:", file_name)
             print("DEBUG: file content length:", len(raw_content))
             print("DEBUG: file content preview:", raw_content[:300])
 
-            analysis_res = analyze_code(raw_content , file_name)
+            analysis_res = analyze_code(raw_content, file_name)
             analysis_results.append({
-                "filename" : file_name,
-                "analysis_result" : analysis_res
+                "filename": file_name,
+                "analysis_result": analysis_res
             })
-        return {"task_id " : task_id , "analysis_result" : analysis_results}
+        return {"task_id": task_id, "analysis_result": analysis_results}
     except Exception as e:
-        return {"task_id " : task_id , "error" : str(e)}
+        return {"task_id": task_id, "error": str(e)}

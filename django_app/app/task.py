@@ -1,8 +1,5 @@
-from celery import Celery
 from celery import shared_task
 from app.utils.github import analysis_pr
-
-app = Celery('django_app')
 
 
 @shared_task
