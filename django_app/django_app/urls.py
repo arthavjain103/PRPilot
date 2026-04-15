@@ -16,10 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import start_task , task_status
+from app.views import start_task, task_status
+from app.auth_views import register, login, refresh_access_token, logout, get_current_user
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Auth endpoints
+    path('auth/register/', register, name='register'),
+    path('auth/login/', login, name='login'),
+    path('auth/refresh/', refresh_access_token, name='refresh'),
+    path('auth/logout/', logout, name='logout'),
+    path('auth/me/', get_current_user, name='get_user'),
+    # Analysis endpoints
     path('start-task/', start_task, name='start_task'),
     path('task-status/<str:task_id>/', task_status, name='task_status'),
 ]
