@@ -7,6 +7,7 @@ from celery.result import AsyncResult
 import jwt
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 
 
 def get_user_from_token(request):
@@ -49,6 +50,10 @@ def start_task(request):
     pr_number = int(data.get('pr_number'))  # Convert to int
     github_token = data.get('github_token')
     task = analyze_pr_request.delay(repo_url, pr_number, github_token)
+    
+    # Store task_id -> user_id mapping in cache (expires in 24 hours)
+    cache.set(f'task_owner_{task.id}', user.id, timeout=86400)
+    
     return Response({"task_id": task.id , "status": "task has started"})
 
 @api_view(['GET'])
@@ -60,6 +65,14 @@ def task_status(request, task_id):
         return Response(
             {'error': 'Unauthorized'},
             status=401
+        )
+    
+    # Check task ownership
+    task_owner_id = cache.get(f'task_owner_{task_id}')
+    if task_owner_id is None or task_owner_id != user.id:
+        return Response(
+            {'error': 'Forbidden'},
+            status=403
         )
     
     result = AsyncResult(task_id)

@@ -159,6 +159,23 @@ def refresh_access_token(request):
 def logout(request):
     """Logout user - POST /auth/logout/"""
     try:
+        refresh_token = request.data.get('refresh_token')
+        
+        if not refresh_token:
+            return Response(
+                {'error': 'Refresh token required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except Exception as e:
+            return Response(
+                {'error': 'Invalid or expired refresh token'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
         return Response(
             {'message': 'Logged out successfully'},
             status=status.HTTP_200_OK

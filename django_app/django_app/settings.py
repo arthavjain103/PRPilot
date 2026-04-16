@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'app',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'celery'
 ]
 
@@ -147,6 +148,14 @@ CELERY_RESULT_EXPIRES = 60 * 60 * 24
 # Windows compatibility: use solo pool for Celery
 CELERY_WORKER_POOL = 'solo'
 CELERY_TASK_ALWAYS_EAGER = False
+
+# Cache configuration for task ownership tracking
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+    }
+}
 
 
 SIMPLE_JWT = {
